@@ -12,7 +12,10 @@ export default function App() {
   useEffect(()=> {
     async function dados(){
       //Criar um nó
-      await firebase.database().ref('tipo').set('Cliente');
+      //await firebase.database().ref('tipo').set('Cliente');
+
+      //Remover um nó
+      //await firebase.database().ref('tipo').remove();
 
     }
 
