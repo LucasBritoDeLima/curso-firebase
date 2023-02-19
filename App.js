@@ -17,10 +17,15 @@ export default function App() {
       //Remover um nó
       //await firebase.database().ref('tipo').remove();
 
-      await firebase.database().ref('usuarios').child(3).set({
-        nome: 'José',
-        cargo: 'Programador'
-      });
+      // await firebase.database().ref('usuarios').child(3).set({
+      //   nome: 'José',
+      //   cargo: 'Programador Júnior'
+      // });
+
+      // await firebase.database().ref('usuarios').child(3)
+      // .update({
+      //   nome: 'José Augusto'
+      // })
 
     }
 
