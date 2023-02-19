@@ -11,16 +11,9 @@ export default function App() {
 
   useEffect(()=> {
     async function dados(){
+      //Criar um nó
+      await firebase.database().ref('tipo').set('Cliente');
 
-      //Olehiro do banco de dados, observador das mudanças
-      await firebase.database().ref('usuarios/2').on('value', (snapshot) => {
-        setNome(snapshot.val().name);
-        setIdade(snapshot.val().idade);
-      })
-      
-      // await firebase.database().ref('nome').once('value', (snapshot) => {
-      //   setNome(snapshot.val());
-      // });
     }
 
     dados();
