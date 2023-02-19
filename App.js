@@ -1,20 +1,37 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useState, useEffect } from 'react';
+import { setStatusBarBackgroundColor, StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, Platform } from 'react-native';
+import firebase from './src/firebaseConnection';
+
 
 export default function App() {
+
+  const [nome, setNome] = useState('Carregando...');
+  const [idade, setIdade] = useState('');
+
+  useEffect(()=> {
+    async function dados(){
+
+      //Olehiro do banco de dados, observador das mudanças
+      await firebase.database().ref('usuarios/2').on('value', (snapshot) => {
+        setNome(snapshot.val().name);
+        setIdade(snapshot.val().idade);
+      })
+      
+      // await firebase.database().ref('nome').once('value', (snapshot) => {
+      //   setNome(snapshot.val());
+      // });
+    }
+
+    dados();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={{marginTop: 35}}>
+      
+      <StatusBar backgroundColor='#000'/>
+      <Text style={{ fontSize: 25}}>Olá {nome}</Text>
+      <Text style={{ fontSize: 25}}>Idade {idade}</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
