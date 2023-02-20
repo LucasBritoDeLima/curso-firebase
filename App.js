@@ -1,32 +1,34 @@
 import { useState, useEffect } from 'react';
 import { setStatusBarBackgroundColor, StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, FlatList, ActivityIndicator } from 'react-native';
 import firebase from './src/firebaseConnection';
+import Listagem from './src/Listagem';
 
 
 export default function App() {
 
-  const [nome, setNome] = useState('Carregando...');
+  const [nome, setNome] = useState('');
   const [cargo, setCargo] = useState('');
+  const [usuarios, setUsuarios] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(()=> {
     async function dados(){
-      //Criar um nó
-      //await firebase.database().ref('tipo').set('Cliente');
+      await firebase.database().ref('usuarios').on('value', (snapshot) => {
+        setUsuarios([]);
 
-      //Remover um nó
-      //await firebase.database().ref('tipo').remove();
+        snapshot.forEach((childItem) => {
+          let data = {
+            key: childItem.key,
+            nome: childItem.val().nome,
+            cargo: childItem.val().cargo
+          };
 
-      // await firebase.database().ref('usuarios').child(3).set({
-      //   nome: 'José',
-      //   cargo: 'Programador Júnior'
-      // });
+          setUsuarios(oldArray => [...oldArray, data].reverse());
+        })
 
-      // await firebase.database().ref('usuarios').child(3)
-      // .update({
-      //   nome: 'José Augusto'
-      // })
-
+        setLoading(false);
+      })
     }
 
     dados();
@@ -70,6 +72,20 @@ export default function App() {
         title="Novo Funcionário"
         onPress={cadastrar}
       />
+
+      {loading ? 
+      (
+        <ActivityIndicator color="#121212" size={45} />
+      ) :
+      (
+        <FlatList 
+        keyExtractor={item => item.key}
+        data={usuarios}
+        renderItem={ ({item}) => ( <Listagem data={item} /> )}
+      />
+      )
+    }
+      
     </View>
   );
 }
