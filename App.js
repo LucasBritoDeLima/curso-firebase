@@ -8,34 +8,32 @@ export default function App() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [user, setUser] = useState('');
 
-  async function cadastrar(){
-    await firebase.auth().createUserWithEmailAndPassword(email, password)
+  async function logar(){
+    await firebase.auth().signInWithEmailAndPassword(email, password)
     .then( (value) => {
-      alert('Usuario criado: ' + value.user.email);
-      return;
+      alert('Bem-vindo: ' + value.user.email);
+      setUser(value.user.email);
     })
     .catch( (error) => {
-      if(error.code === 'auth/weak-password'){
-        alert('Sua senha deve ter pelo menos 6 caracteres');
-        return;
-      }
-      if(error.code === 'auth/invalid-email'){
-        alert('Email inválido');
-        return;
-      }else{
         alert('Ops! Algo deu errado!');
         return;
-      }
     })
 
     setEmail('');
     setPassword('');
   }
 
+  async function logout(){
+    await firebase.auth().signOut();
+    setUser("");
+    alert("Deslogado com sucesso!");
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.texto}>Email</Text>
+      <Text style={styles.texto1}>Email</Text>
       <TextInput
         style={styles.input}
         underlineColorAndroid="transparent"
@@ -51,9 +49,27 @@ export default function App() {
       />
 
       <Button
-        title="Cadastrar"
-        onPress={cadastrar}
+        title="Acessar"
+        onPress={logar}
       />
+
+      
+      {user.length > 0 ?
+      (
+        <>
+        <Text style={{marginTop: 20, marginBottom: 20, fontSize: 23, textAlign: 'center'}}>
+          {user}
+        </Text>
+        <Button
+          title="Deslogar"
+          onPress={logout}
+        />
+        </>
+      )  :
+      (
+        <Text style={{marginTop: 20, marginBottom: 20, fontSize: 23, textAlign: 'center'}}>Nenhum usuário está logado!</Text>
+      )}
+      
       
     </View>
   );
@@ -66,6 +82,10 @@ const styles = StyleSheet.create({
   },
   texto:{
     fontSize: 20
+  },
+  texto1:{
+    fontSize: 20,
+    marginTop: 30
   },
   input:{
     marginBottom: 10,
